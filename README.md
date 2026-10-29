@@ -26,4 +26,12 @@ https://lalithkhalap.github.io/veilpix-secure-steganography/
 
 ## Project Purpose
 This project demonstrates the concepts of image steganography and cryptography for educational purposes.
+## Website Preview
+
+![VEILPIX Website Preview](veilpix-home.png)
+
+## Live Demo
+
+[Open VEILPIX Website](https://lalithkhalap.github.io/veilpix-secure-steganography/)
+
 
