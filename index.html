@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VEILPIX — Secure Image Steganography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#12372A;--forest:#1B4332;--cream:#F3E9D2;--sage:#74C69D;--gold:#E9C46A;--mint:#D8F3DC;--white:#fff;--text:#1B2A24;--text2:#62736A;--line:#B7D5C0;--err:#B54740;--r:12px;--sh:0 8px 24px rgba(18,55,42,.12);--hf:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;--bf:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth;scroll-padding-top:72px}
+body{font:16px/1.6 var(--bf);background:var(--cream);color:var(--text);overflow-x:hidden}
+h1,h2,h3{font-family:var(--hf);line-height:1.15;color:var(--ink)}
+svg{display:block}.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+a{color:inherit}.wrap{max-width:1140px;margin:auto;padding:0 24px}section{padding:80px 0}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 24px;border-radius:10px;border:2px solid transparent;font:600 15px var(--bf);cursor:pointer;text-decoration:none;transition:.2s}
+.btn:active{transform:scale(.98)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.gold{background:var(--gold);color:var(--ink)}.gold:hover{background:#f0d083}
+.sage{background:var(--sage);color:var(--ink)}.sage:hover{background:#8ad4ad}
+.ghost{background:transparent;border-color:var(--line);color:inherit}.ghost:hover{border-color:var(--sage);background:rgba(116,198,157,.12)}
+.sm{min-height:36px;padding:0 14px;font-size:13px}
+nav{position:sticky;top:0;z-index:50;background:var(--ink);border-bottom:1px solid rgba(116,198,157,.25);color:var(--cream)}
+.nb{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}.logo b{font:800 20px var(--hf);letter-spacing:.04em;display:block;line-height:1}.logo small{font-size:10px;letter-spacing:.14em;color:var(--sage);display:block}
+.links{display:flex;gap:4px;align-items:center}.links a{padding:8px 14px;border-radius:8px;text-decoration:none;font-weight:500;font-size:15px;transition:.2s}.links a:hover,.links a.on{color:var(--sage);background:rgba(116,198,157,.12)}
+#mb{display:none;background:none;border:0;color:var(--cream);cursor:pointer;padding:8px}
+.hero{background:radial-gradient(900px 500px at 85% 20%,rgba(116,198,157,.22),transparent),linear-gradient(135deg,var(--ink),var(--forest));color:var(--cream);padding:88px 0}
+.hg{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+.eye{font-size:12px;letter-spacing:.16em;color:var(--gold);font-weight:600;margin-bottom:16px}
+.hero h1{color:var(--cream);font-size:clamp(38px,5.4vw,64px);margin-bottom:20px}.hero h1 em{color:var(--sage);font-style:normal}
+.hero p.lead{font-size:18px;max-width:480px;opacity:.9;margin-bottom:32px}
+.row{display:flex;gap:12px;flex-wrap:wrap}.trust{display:flex;gap:20px;flex-wrap:wrap;margin-top:36px;font-size:14px;color:var(--mint)}.trust span{display:flex;gap:8px;align-items:center}.trust svg{color:var(--gold)}
+.art{position:relative}.art svg.frame{width:100%;height:auto;border-radius:16px;box-shadow:0 24px 60px rgba(0,0,0,.35);border:6px solid var(--cream)}
+.badge{position:absolute;left:-24px;bottom:28px;background:var(--cream);color:var(--ink);padding:14px 18px;border-radius:12px;box-shadow:var(--sh);display:flex;gap:12px;align-items:center;font:800 12px var(--hf);letter-spacing:.1em}
+.badge small{display:block;font:500 12px var(--bf);letter-spacing:0;color:var(--text2)}.badge svg{color:var(--forest);width:28px;height:28px}
+.sec-h{max-width:640px;margin-bottom:40px}.sec-h h2{font-size:clamp(28px,4vw,42px);margin-bottom:12px}.sec-h p{color:var(--text2);font-size:18px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.card{background:var(--mint);border:1px solid var(--line);border-radius:16px;padding:32px}.card:nth-child(2){background:var(--white)}.card:nth-child(3){background:var(--mint)}
+.card .ib{width:48px;height:48px;border-radius:12px;background:var(--forest);color:var(--gold);display:grid;place-items:center;margin-bottom:20px}.card h3{font-size:20px;margin-bottom:8px}.card p{color:var(--text2)}
+.card{transition:.2s}.card:hover{transform:translateY(-4px);box-shadow:var(--sh)}
+#workspace{background:var(--mint)}
+.tabs{display:inline-flex;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:4px;margin-bottom:24px}
+.tab{border:0;background:none;padding:10px 22px;border-radius:9px;font:600 15px var(--bf);color:var(--text2);cursor:pointer}.tab[aria-selected=true]{background:var(--forest);color:var(--cream)}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:32px;box-shadow:var(--sh)}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:32px}.step{font:700 12px var(--bf);letter-spacing:.12em;color:var(--forest);margin-bottom:4px}
+.panel h3{font-size:22px;margin-bottom:4px}.panel .d{color:var(--text2);margin-bottom:20px}
+.dz{border:2px dashed var(--forest);background:#F1FAF3;border-radius:14px;padding:32px 16px;text-align:center;transition:.2s;min-height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.dz.over{background:var(--mint);border-color:var(--sage);transform:scale(1.01)}.dz svg{color:var(--forest);width:36px;height:36px}.dz p{font-weight:600;color:var(--ink)}.dz small{color:var(--text2)}
+.pv{display:none}.pv img{width:100%;max-height:300px;object-fit:contain;background:var(--mint);border-radius:12px;border:1px solid var(--line)}.pv .meta{font-size:13px;color:var(--text2);margin:8px 0 12px;word-break:break-all}
+label{display:block;font-weight:600;font-size:14px;color:var(--forest);margin:16px 0 6px}
+input[type=password],input[type=text],textarea{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font:16px var(--bf);background:#fff;color:var(--text);transition:.2s}
+input:focus,textarea:focus{outline:0;border-color:var(--forest);box-shadow:0 0 0 3px rgba(116,198,157,.35)}textarea{min-height:130px;resize:vertical}
+.pw{position:relative}.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:0;color:var(--forest);font:600 13px var(--bf);cursor:pointer;padding:8px}
+.cnt{text-align:right;font-size:12px;color:var(--text2)}.bar{height:6px;background:var(--mint);border-radius:3px;margin-top:8px;overflow:hidden}.bar i{display:block;height:100%;width:0;transition:.3s}
+.msg{font-size:14px;margin-top:12px;min-height:20px}.msg.e{color:var(--err);font-weight:500}
+.go{width:100%;margin-top:16px}.note{font-size:13px;color:var(--text2);text-align:center;margin-top:10px}
+.res{display:none;text-align:center}.res img{max-width:100%;max-height:340px;border-radius:12px;border:1px solid var(--line);margin:16px 0}.res dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:12px 0 20px;font-size:14px;text-align:left}.res dl div{background:var(--mint);padding:10px 14px;border-radius:10px}.res dt{font-size:12px;color:var(--text2)}.res dd{font-weight:600;word-break:break-all}
+.out{background:var(--cream);border-left:5px solid var(--sage);border-radius:10px;padding:20px;white-space:pre-wrap;word-break:break-word;margin:16px 0;font-size:17px;text-align:left}
+.spin{width:16px;height:16px;border:2.5px solid rgba(18,55,42,.3);border-top-color:var(--ink);border-radius:50%;animation:s .7s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}.steps div{border-top:3px solid var(--gold);padding-top:20px}.steps b{font:800 40px var(--hf);color:var(--sage)}.steps h3{margin:4px 0 8px}.steps p{color:var(--text2)}
+#security{background:var(--forest);color:var(--cream)}#security h2{color:var(--cream)}.sg{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center}
+#security li{margin:10px 0 10px 4px;list-style:none;display:flex;gap:10px}#security li svg{color:var(--sage);flex:none;margin-top:3px}#security p.f{opacity:.8;font-size:14px;margin:20px 0 28px}
+#faq .item:nth-child(odd){background:var(--cream)}#faq .item:nth-child(even){background:var(--mint)}
+.faqw{max-width:820px;margin:auto}details{background:var(--cream);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden}details:nth-child(even){background:var(--mint)}
+summary{cursor:pointer;padding:18px 20px;font:700 17px var(--hf);color:var(--ink);list-style:none;display:flex;justify-content:space-between;gap:12px}summary::-webkit-details-marker{display:none}summary svg{color:var(--forest);transition:.25s;flex:none}details[open] summary svg{transform:rotate(180deg)}details p{padding:0 20px 20px;color:var(--text2);animation:f .3s}@keyframes f{from{opacity:0}}
+#about{background:var(--mint)}.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}.tags span{background:var(--white);border:1px solid var(--line);padding:6px 14px;border-radius:99px;font-size:13px;font-weight:600;color:var(--forest)}
+footer{background:var(--ink);color:var(--cream);padding:48px 0 32px}.fg{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap}.fg a{color:var(--sage);text-decoration:none;margin-right:16px}.fg a:hover{text-decoration:underline}footer small{display:block;margin-top:32px;opacity:.7;font-size:13px;border-top:1px solid rgba(116,198,157,.25);padding-top:20px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,100px);background:var(--ink);color:var(--cream);padding:12px 20px;border-radius:10px;border-left:4px solid var(--gold);box-shadow:var(--sh);transition:.3s;z-index:99;max-width:90vw}#toast.show{transform:translate(-50%,0)}
+@media(max-width:900px){.hg,.pg,.sg,.cards,.steps{grid-template-columns:1fr}.badge{left:12px}section{padding:56px 0}}
+@media(max-width:820px){#mb{display:block}.links{display:none;position:absolute;top:68px;left:0;right:0;background:var(--ink);flex-direction:column;align-items:stretch;padding:12px 24px 20px;border-bottom:1px solid rgba(116,198,157,.25)}.links.open{display:flex}.nb .btn.gold{display:none}}
+@media(max-width:480px){.panel{padding:20px}.row .btn{width:100%}.hero{padding:56px 0}.wrap{padding:0 16px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-sh" viewBox="0 0 24 24"><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/><path d="M9 12l2 2 4-4"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-up" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol>
+<symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+<symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+<symbol id="i-dn" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+<symbol id="logo" viewBox="0 0 32 32"><path d="M16 2l12 4v9c0 7-5 12-12 15C9 27 4 22 4 15V6z" fill="#74C69D"/><rect x="11" y="9" width="5" height="5" fill="#12372A"/><rect x="16" y="14" width="5" height="5" fill="#E9C46A"/><rect x="11" y="19" width="5" height="5" fill="#12372A" opacity=".5"/></symbol>
+</defs></svg>
+
+<nav><div class="wrap nb">
+<a class="logo" href="#home"><svg width="34" height="34"><use href="#logo"/></svg><span><b>VEILPIX</b><small>PRIVATE BY DESIGN</small></span></a>
+<div class="links" id="links"><a href="#home" class="on">Home</a><a href="#workspace" data-tab="hide">Hide Message</a><a href="#workspace" data-tab="ext">Extract Message</a><a href="#about">About</a></div>
+<a class="btn gold sm" href="#workspace" data-tab="hide">Start Encrypting</a>
+<button id="mb" aria-label="Toggle menu" aria-expanded="false"><svg class="ic" width="26" height="26"><use href="#i-menu"/></svg></button>
+</div></nav>
+
+<header class="hero" id="home"><div class="wrap hg">
+<div>
+<div class="eye">PRIVATE IMAGE COMMUNICATION</div>
+<h1>Some secrets are better <em>left unseen.</em></h1>
+<p class="lead">Encrypt your message. Hide it inside an ordinary image. Reveal it only with the right password.</p>
+<div class="row"><a class="btn gold" href="#workspace" data-tab="hide">Hide a Message</a><a class="btn ghost" href="#workspace" data-tab="ext">Extract a Message</a></div>
+<div class="trust"><span><svg class="ic"><use href="#i-lock"/></svg>AES-GCM Encryption</span><span><svg class="ic"><use href="#i-eye"/></svg>Browser-Based Processing</span><span><svg class="ic"><use href="#i-sh"/></svg>No Server Uploads</span></div>
+</div>
+<div class="art">
+<svg class="frame" viewBox="0 0 400 320" role="img" aria-label="Illustration of a landscape image being protected">
+<defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F3E9D2"/><stop offset="1" stop-color="#D8F3DC"/></linearGradient><pattern id="px" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="10" height="10" fill="#12372A" opacity=".5"/><rect x="10" y="10" width="10" height="10" fill="#74C69D" opacity=".5"/></pattern><clipPath id="rc"><rect x="200" y="0" width="200" height="320"/></clipPath></defs>
+<rect width="400" height="320" fill="url(#sk)"/><circle cx="290" cy="80" r="32" fill="#E9C46A"/>
+<path d="M0 230l90-100 70 70 60-80 90 110 90-50v140H0z" fill="#74C69D"/><path d="M0 270l110-70 90 60 110-80 90 70v70H0z" fill="#1B4332"/>
+<g clip-path="url(#rc)"><rect width="400" height="320" fill="url(#px)" opacity=".75"/></g>
+<line x1="200" y1="0" x2="200" y2="320" stroke="#E9C46A" stroke-width="3" stroke-dasharray="6 6"/>
+<rect x="180" y="145" width="40" height="30" rx="15" fill="#12372A"/><text x="200" y="165" text-anchor="middle" fill="#E9C46A" font-size="11" font-family="sans-serif" font-weight="700">LSB</text>
+</svg>
+<div class="badge"><svg class="ic"><use href="#i-sh"/></svg><div>MESSAGE PROTECTED<small>AES-GCM · PBKDF2</small></div></div>
+</div></div></header>
+
+<section id="features"><div class="wrap">
+<div class="sec-h"><h2>Security without complexity.</h2><p>Everything you need to protect a message and conceal it inside an image.</p></div>
+<div class="cards">
+<div class="card"><div class="ib"><svg class="ic"><use href="#i-lock"/></svg></div><h3>AES-GCM Encryption</h3><p>Your message is encrypted before it is hidden. Only someone with the correct password can successfully decrypt it.</p></div>
+<div class="card"><div class="ib"><svg class="ic"><use href="#i-eye"/></svg></div><h3>Invisible Data Hiding</h3><p>Conceal encrypted data inside image pixels while keeping visual changes designed to be subtle.</p></div>
+<div class="card"><div class="ib"><svg class="ic"><use href="#i-sh"/></svg></div><h3>Browser-Based Privacy</h3><p>Your image and message are processed locally in the browser without uploading them to an application server.</p></div>
+</div></div></section>
+
+<section id="workspace"><div class="wrap">
+<div class="sec-h"><h2>Your private workspace.</h2><p>Encrypt a message, conceal it inside an image, and recover it whenever you need it.</p></div>
+<div class="tabs" role="tablist"><button class="tab" role="tab" id="t-hide" data-tab="hide" aria-selected="true">Hide Message</button><button class="tab" role="tab" id="t-ext" data-tab="ext" aria-selected="false">Extract Message</button></div>
+
+<div class="panel" id="p-hide" role="tabpanel">
+<div id="hideForm"><div class="pg">
+<div><div class="step">01 / SOURCE IMAGE</div><h3>Choose a carrier image</h3><p class="d">Choose the image that will carry your secret.</p><div class="dz-host" data-k="h"></div></div>
+<div><div class="step">02 / ENCRYPTION DETAILS</div><h3>Write and protect</h3><p class="d">Write your message and protect it with a password.</p>
+<label for="secret">Secret message</label><textarea id="secret" placeholder="Type your secret here…"></textarea><div class="cnt"><span id="cc">0</span> characters</div>
+<label for="pw1">Password</label><div class="pw"><input type="password" id="pw1" autocomplete="new-password"><button type="button" data-show="pw1">Show</button></div>
+<div class="bar"><i id="sb"></i></div><div class="cnt" id="st">Use 12+ characters with mixed types</div>
+<label for="pw2">Confirm password</label><div class="pw"><input type="password" id="pw2" autocomplete="new-password"><button type="button" data-show="pw2">Show</button></div>
+<div class="msg e" id="hm" role="alert"></div>
+<button class="btn sage go" id="enc"><svg class="ic"><use href="#i-sh"/></svg>Encrypt &amp; Hide Message</button><div class="note">Your message stays in this browser.</div></div>
+</div></div>
+<div class="res" id="hideRes"><svg class="ic" width="44" height="44" style="margin:auto;color:var(--forest)"><use href="#i-ok"/></svg><h3>Your message is now concealed.</h3><p class="d">The encrypted payload has been embedded into your image.</p><img id="outImg" alt="Encoded image preview"><dl id="outMeta"></dl><div class="row" style="justify-content:center"><a class="btn gold" id="dl" download>Download Secure Image</a><button class="btn ghost" id="again" style="color:var(--forest)">Hide Another Message</button></div></div>
+</div>
+
+<div class="panel" id="p-ext" role="tabpanel" hidden>
+<div id="extForm"><div class="pg">
+<div><div class="step">01 / ENCODED IMAGE</div><h3>Reveal your hidden message.</h3><p class="d">Upload your encoded PNG and enter the correct password to recover the original message.</p><div class="dz-host" data-k="x"></div></div>
+<div><div class="step">02 / PASSWORD</div><h3>Unlock</h3><p class="d">Use the password chosen when hiding the message.</p>
+<label for="pw3">Password</label><div class="pw"><input type="password" id="pw3" autocomplete="off"><button type="button" data-show="pw3">Show</button></div>
+<div class="msg e" id="xm" role="alert"></div>
+<button class="btn sage go" id="ext"><svg class="ic"><use href="#i-eye"/></svg>Extract Secret Message</button>
+<button class="btn ghost go" id="xr" style="color:var(--forest)">Reset</button></div>
+</div></div>
+<div class="res" id="extRes"><svg class="ic" width="44" height="44" style="margin:auto;color:var(--forest)"><use href="#i-ok"/></svg><h3>Message recovered successfully.</h3><div class="out" id="outTxt"></div><div class="row" style="justify-content:center"><button class="btn gold" id="copy">Copy Message</button><button class="btn ghost" id="more" style="color:var(--forest)">Extract Another Message</button><button class="btn ghost" id="clr" style="color:var(--forest)">Clear</button></div></div>
+</div>
+</div></section>
+
+<section id="how"><div class="wrap"><div class="sec-h"><h2>How it works</h2><p>Three steps, explained simply.</p></div>
+<div class="steps"><div><b>01</b><h3>Encrypt</h3><p>Use AES-GCM to protect the message.</p></div><div><b>02</b><h3>Conceal</h3><p>Embed the encrypted data in image pixel bits.</p></div><div><b>03</b><h3>Recover</h3><p>Upload the PNG and enter the correct password.</p></div></div></div></section>
+
+<section id="security"><div class="wrap sg"><div>
+<h2>Your files stay yours.</h2><ul style="padding:0;margin-top:20px">
+<li><svg class="ic"><use href="#i-ok"/></svg>Image processing runs in the browser.</li><li><svg class="ic"><use href="#i-ok"/></svg>Encryption and decryption run locally.</li><li><svg class="ic"><use href="#i-ok"/></svg>No application server is required.</li><li><svg class="ic"><use href="#i-ok"/></svg>Passwords are not saved by the application.</li></ul>
+<p class="f">Steganography does not guarantee invisibility, and this educational project has not been professionally audited.</p>
+<a class="btn gold" href="#workspace" data-tab="hide">Try VEILPIX</a></div>
+<svg viewBox="0 0 240 240" width="100%" style="max-width:300px;margin:auto" aria-hidden="true"><circle cx="120" cy="120" r="110" fill="#12372A"/><use href="#logo" x="50" y="50" width="140" height="140"/><g fill="#E9C46A"><rect x="20" y="30" width="10" height="10"/><rect x="205" y="60" width="10" height="10"/><rect x="30" y="195" width="10" height="10"/></g></svg>
+</div></section>
+
+<section id="faq"><div class="wrap faqw"><div class="sec-h"><h2>Questions, answered.</h2></div>
+<details><summary>Can someone detect a hidden message?<svg class="ic"><use href="#i-dn"/></svg></summary><p>Possibly. LSB changes are subtle to the eye, but statistical tools can sometimes flag them. That is why the message is encrypted first: even if the data is found, it is unreadable without the password.</p></details>
+<details><summary>What happens if I enter the wrong password?<svg class="ic"><use href="#i-dn"/></svg></summary><p>AES-GCM authentication fails, so nothing is shown. VEILPIX never displays ciphertext as text.</p></details>
+<details><summary>Why is PNG recommended?<svg class="ic"><use href="#i-dn"/></svg></summary><p>PNG is lossless, so every pixel bit is preserved. JPEG compression rewrites pixel values and destroys hidden data.</p></details>
+<details><summary>Are my images uploaded anywhere?<svg class="ic"><use href="#i-dn"/></svg></summary><p>No. Everything runs in your browser using the Canvas and Web Crypto APIs. Nothing is sent to a server.</p></details>
+<details><summary>What happens if the image is modified?<svg class="ic"><use href="#i-dn"/></svg></summary><p>Resizing, cropping, filtering, screenshots, or re-saving as JPEG will likely corrupt the payload, and extraction will fail.</p></details>
+<details><summary>Is VEILPIX a professional messaging service?<svg class="ic"><use href="#i-dn"/></svg></summary><p>No. It is an educational project demonstrating AES-GCM with LSB steganography. Do not rely on it for high-stakes secrets.</p></details>
+</div></section>
+
+<section id="about"><div class="wrap"><div class="sec-h" style="margin:0"><h2>About VEILPIX</h2><p>VEILPIX is an educational Cryptography and Network Security project that demonstrates AES-GCM encryption combined with least significant bit image steganography.</p></div>
+<div class="tags"><span>HTML5</span><span>CSS3</span><span>JavaScript</span><span>AES-GCM</span><span>PBKDF2</span><span>Canvas API</span></div></div></section>
+
+<footer><div class="wrap"><div class="fg"><div><a class="logo" href="#home" style="margin:0 0 8px"><svg width="30" height="30"><use href="#logo"/></svg><b style="font:800 18px var(--hf)">VEILPIX</b></a><p>Private messages. Hidden in plain sight.</p></div>
+<div><a href="#home">Home</a><a href="#workspace" data-tab="hide">Hide</a><a href="#workspace" data-tab="ext">Extract</a><a href="#about">About</a></div></div>
+<small>Educational project — not a professional security product. © <span id="yr"></span> VEILPIX</small></div></footer>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const MAGIC=[0x56,0x50,0x58,0x31],VER=1,SALT=16,IV=12,HDR=4+1+SALT+IV+4,ITER=250000,MAXPX=16e6,MAXMSG=1e6;
+/* PAYLOAD: "VPX1"(4) | version(1) | salt(16) | nonce(12) | ctLen uint32 BE (4) | ciphertext+GCM tag.
+   Bits are written MSB-first into the R,G,B LSBs of each pixel in order; alpha is skipped (canvas is flattened to opaque). */
+const te=new TextEncoder(),td=new TextDecoder("utf-8",{fatal:true});
+let tt;function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2800)}
+$("#yr").textContent=new Date().getFullYear();
+
+/* nav + tabs */
+function setTab(k){$$(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===k));$("#p-hide").hidden=k!=="hide";$("#p-ext").hidden=k!=="ext"}
+$$("[data-tab]").forEach(a=>a.addEventListener("click",()=>{setTab(a.dataset.tab);$("#links").classList.remove("open");$("#mb").setAttribute("aria-expanded","false")}));
+$("#mb").addEventListener("click",()=>{const o=$("#links").classList.toggle("open");$("#mb").setAttribute("aria-expanded",o)});
+$$(".links a").forEach(a=>a.addEventListener("click",()=>{$("#links").classList.remove("open");$$(".links a").forEach(x=>x.classList.toggle("on",x===a))}));
+$$("[data-show]").forEach(b=>b.addEventListener("click",()=>{const i=$("#"+b.dataset.show),h=i.type==="password";i.type=h?"text":"password";b.textContent=h?"Hide":"Show"}));
+
+/* dropzones */
+const Z={};
+$$(".dz-host").forEach(h=>{const k=h.dataset.k;h.innerHTML=`<div class="dz"><svg class="ic"><use href="#i-up"/></svg><p>Drop your image here</p><small>PNG, JPG, or WebP</small><button type="button" class="btn ghost sm" style="color:var(--forest)">Browse Image</button></div><input type="file" accept="image/png,image/jpeg,image/webp" hidden><div class="pv"><img alt="Selected image preview"><div class="meta"></div><div class="row"><button type="button" class="btn ghost sm rep" style="color:var(--forest)">Replace image</button><button type="button" class="btn ghost sm rm" style="color:var(--forest)">Remove image</button></div></div>`;
+const z={file:null,url:null,dz:h.querySelector(".dz"),inp:h.querySelector("input"),pv:h.querySelector(".pv")};Z[k]=z;
+const pick=()=>z.inp.click();z.dz.querySelector("button").onclick=pick;z.pv.querySelector(".rep").onclick=pick;z.pv.querySelector(".rm").onclick=()=>clearZ(k);
+z.dz.addEventListener("click",e=>{if(e.target===z.dz||e.target.tagName!=="BUTTON")pick()});
+["dragover","dragenter"].forEach(ev=>z.dz.addEventListener(ev,e=>{e.preventDefault();z.dz.classList.add("over")}));
+["dragleave","drop"].forEach(ev=>z.dz.addEventListener(ev,e=>{e.preventDefault();z.dz.classList.remove("over")}));
+z.dz.addEventListener("drop",e=>setFile(k,e.dataTransfer.files[0]));z.inp.onchange=()=>setFile(k,z.inp.files[0])});
+function clearZ(k){const z=Z[k];if(z.url)URL.revokeObjectURL(z.url);z.file=z.url=null;z.inp.value="";z.pv.style.display="none";z.dz.style.display="flex"}
+function setFile(k,f){const z=Z[k],m=k==="h"?$("#hm"):$("#xm");m.textContent="";if(!f)return;
+ if(!/^image\/(png|jpeg|webp)$/.test(f.type)){m.textContent="Unsupported file. Choose a PNG, JPG, or WebP image.";return}
+ const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{if(z.url)URL.revokeObjectURL(z.url);z.file=f;z.url=u;const i=z.pv.querySelector("img");i.src=u;z.pv.querySelector(".meta").textContent=`${f.name} · ${(f.size/1024).toFixed(1)} KB · ${im.naturalWidth}×${im.naturalHeight}px`;z.pv.style.display="block";z.dz.style.display="none"};
+ im.onerror=()=>{URL.revokeObjectURL(u);m.textContent="This image could not be decoded. Try another file."};im.src=u}
+
+/* crypto + stego helpers */
+async function pixels(url){const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=()=>no(new Error("decode"));i.src=url});
+ const w=im.naturalWidth,h=im.naturalHeight;if(!w||!h||w*h>MAXPX)throw new Error("size");
+ const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d",{willReadFrequently:true});x.fillStyle="#fff";x.fillRect(0,0,w,h);x.drawImage(im,0,0);
+ return{c,x,w,h,id:x.getImageData(0,0,w,h)}}
+const bi=j=>((j/3)|0)*4+j%3; // bit index -> RGBA array index (skips alpha)
+function embed(d,b,off){for(let n=0;n<b.length;n++)for(let k=7;k>=0;k--){const i=bi((off+n)*8+(7-k));d[i]=(d[i]&254)|((b[n]>>k)&1)}}
+function read(d,off,len){const o=new Uint8Array(len);for(let t=0;t<len*8;t++)o[t>>3]|=(d[bi(off*8+t)]&1)<<(7-(t&7));return o}
+async function key(pw,salt){const m=await crypto.subtle.importKey("raw",te.encode(pw),"PBKDF2",false,["deriveKey"]);return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:ITER,hash:"SHA-256"},m,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])}
+function ready(){if(!window.crypto||!crypto.subtle||!window.isSecureContext){return"Secure cryptography is unavailable. Open this page over HTTPS (such as GitHub Pages) or localhost in a modern browser."}return""}
+function busy(b,on,t){b.disabled=on;b.innerHTML=on?'<span class="spin"></span>Working…':t}
+
+/* password strength + counter */
+$("#secret").addEventListener("input",e=>$("#cc").textContent=[...e.target.value].length);
+$("#pw1").addEventListener("input",e=>{const p=e.target.value;let s=0;if(p.length>=8)s++;if(p.length>=12)s++;if(/[a-z]/.test(p)&&/[A-Z]/.test(p))s++;if(/\d/.test(p))s++;if(/[^\w\s]/.test(p))s++;
+ const L=[["Very weak","#B54740"],["Weak","#B54740"],["Fair","#E9C46A"],["Good","#74C69D"],["Strong","#1B4332"],["Excellent","#1B4332"]][p?s:0];$("#sb").style.cssText=`width:${(p?s:0)*20}%;background:${L[1]}`;$("#st").textContent=p?"Strength: "+L[0]:"Use 12+ characters with mixed types"});
+
+/* HIDE */
+const encBtn=$("#enc"),encLbl=encBtn.innerHTML;let outUrl=null;
+encBtn.addEventListener("click",async()=>{const m=$("#hm");m.textContent="";
+ const msg=$("#secret").value,p1=$("#pw1").value,p2=$("#pw2").value,e=ready();
+ if(e)return m.textContent=e;if(!Z.h.file)return m.textContent="Choose a source image first.";
+ if(!msg.trim())return m.textContent="Enter a secret message.";if(msg.length>MAXMSG)return m.textContent="Message is too long.";
+ if(p1.length<8)return m.textContent="Use a password of at least 8 characters.";if(p1!==p2)return m.textContent="Passwords do not match.";
+ busy(encBtn,true);
+ try{const P=await pixels(Z.h.url),salt=crypto.getRandomValues(new Uint8Array(SALT)),iv=crypto.getRandomValues(new Uint8Array(IV));
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:"AES-GCM",iv},await key(p1,salt),te.encode(msg)));
+  const pl=new Uint8Array(HDR+ct.length);pl.set(MAGIC,0);pl[4]=VER;pl.set(salt,5);pl.set(iv,5+SALT);new DataView(pl.buffer).setUint32(5+SALT+IV,ct.length);pl.set(ct,HDR);
+  const cap=Math.floor(P.w*P.h*3/8);if(pl.length>cap){m.textContent=`Image too small. This message needs ${pl.length} bytes but the image holds ${cap}. Use a larger image or a shorter message.`;return}
+  embed(P.id.data,pl,0);P.x.putImageData(P.id,0,0);
+  const blob=await new Promise(r=>P.c.toBlob(r,"image/png"));if(!blob)throw new Error("png");
+  if(outUrl)URL.revokeObjectURL(outUrl);outUrl=URL.createObjectURL(blob);const fn="veilpix-secure-"+Date.now()+".png";
+  $("#outImg").src=outUrl;$("#dl").href=outUrl;$("#dl").download=fn;
+  $("#outMeta").innerHTML="";[["Status","Success"],["File",fn],["Dimensions",P.w+"×"+P.h],["Payload",pl.length+" bytes"],["Capacity",cap+" bytes ("+(pl.length/cap*100).toFixed(2)+"% used)"]].forEach(([a,b])=>{const d=document.createElement("div"),t=document.createElement("dt"),v=document.createElement("dd");t.textContent=a;v.textContent=b;d.append(t,v);$("#outMeta").append(d)});
+  $("#hideForm").style.display="none";$("#hideRes").style.display="block";toast("Message hidden successfully")}
+ catch(er){m.textContent=er.message==="size"?"Image dimensions are too large (limit 16 megapixels).":er.message==="decode"?"This image could not be decoded.":"Something went wrong while encoding. Try again."}
+ finally{busy(encBtn,false,encLbl)}});
+$("#again").addEventListener("click",()=>{$("#hideRes").style.display="none";$("#hideForm").style.display="block";clearZ("h");["secret","pw1","pw2"].forEach(i=>$("#"+i).value="");$("#cc").textContent=0;$("#sb").style.width=0;if(outUrl){URL.revokeObjectURL(outUrl);outUrl=null}});
+
+/* EXTRACT */
+const extBtn=$("#ext"),extLbl=extBtn.innerHTML,BAD="Unable to decrypt this image. Check your password or make sure you selected the correct encoded PNG.";
+extBtn.addEventListener("click",async()=>{const m=$("#xm");m.textContent="";const pw=$("#pw3").value,e=ready();
+ if(e)return m.textContent=e;if(!Z.x.file)return m.textContent="Choose an encoded PNG first.";if(!pw)return m.textContent="Enter the password.";
+ busy(extBtn,true);
+ try{const P=await pixels(Z.x.url),d=P.id.data,cap=Math.floor(P.w*P.h*3/8);if(cap<HDR)throw 0;
+  const h=read(d,0,HDR);if(MAGIC.some((v,i)=>h[i]!==v)||h[4]!==VER)throw 0;
+  const n=new DataView(h.buffer).getUint32(5+SALT+IV);if(n<16||n>cap-HDR)throw 0;
+  const ct=read(d,HDR,n),k=await key(pw,h.slice(5,5+SALT));
+  const txt=td.decode(await crypto.subtle.decrypt({name:"AES-GCM",iv:h.slice(5+SALT,5+SALT+IV)},k,ct));
+  $("#outTxt").textContent=txt;$("#extForm").style.display="none";$("#extRes").style.display="block"}
+ catch(er){m.textContent=BAD}finally{busy(extBtn,false,extLbl)}});
+function resetExt(){$("#extRes").style.display="none";$("#extForm").style.display="block";$("#outTxt").textContent="";$("#pw3").value="";$("#xm").textContent="";clearZ("x")}
+$("#xr").onclick=resetExt;$("#more").onclick=resetExt;$("#clr").onclick=()=>{$("#outTxt").textContent="";toast("Message cleared")};
+$("#copy").addEventListener("click",async()=>{const t=$("#outTxt").textContent;try{await navigator.clipboard.writeText(t);toast("Message copied")}catch{const r=document.createRange();r.selectNodeContents($("#outTxt"));getSelection().removeAllRanges();getSelection().addRange(r);toast("Copy blocked. Message selected; press Ctrl/Cmd+C.")}});
+</script>
+<!--
+DEPLOY ON GITHUB PAGES
+1. Save this file as index.html.
+2. Create a new GitHub repository.
+3. Upload index.html to the repository root.
+4. Open Settings → Pages.
+5. Choose "Deploy from a branch", branch main, folder /(root), then Save.
+6. Open the published URL (https://<username>.github.io/<repo>/).
+-->
+</body>
+</html>
